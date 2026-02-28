@@ -15,6 +15,14 @@ async function getPosts(): Promise<Post[]> {
   return data;
 }
 
+function formatDate(dateString: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(new Date(dateString));
+}
+
 export default async function Home() {
   const posts = await getPosts();
   console.log(posts);
@@ -27,7 +35,7 @@ export default async function Home() {
           <Card key={post.id} shadow="sm" padding="lg" radius="md" withBorder>
             <Title order={3}>{post.title}</Title>
             <Text c="dimmed" size="sm" mt="xs">
-              {post.created_at}
+              {formatDate(post.created_at)}
             </Text>
             <Text mt="sm">{post.content}</Text>
           </Card>
