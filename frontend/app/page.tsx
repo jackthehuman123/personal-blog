@@ -1,35 +1,38 @@
-"use client";
+import { Container, Title, Text, Stack, Card } from "@mantine/core";
 
-import { useEffect, useState } from "react";
+type Post = {
+  id: number;
+  title: string;
+  content: string;
+  slug: string;
+  created_at: string;
+  updated_at: string;
+};
 
-export default function Home() {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState("");
+async function getPosts(): Promise<Post[]> {
+  const res = await fetch("http://localhost:8000/api/posts/");
+  const data = await res.json();
+  return data;
+}
 
-  useEffect(() => {
-    fetch("http://localhost:8000/api/health/")
-      .then((res) => {
-        if (!res.ok) throw new Error("Backend returned an error");
-        return res.json();
-      })
-      .then(setData)
-      .catch((e) => setError(e.message));
-  }, []);
+export default async function Home() {
+  const posts = await getPosts();
+  console.log(posts);
 
   return (
-    <main style={{ padding: 24, fontFamily: "sans-serif" }}>
-      <h1>Frontend connected to Django</h1>
-
-      {error && <p style={{ color: "red" }}>Error: {error}</p>}
-
-      {!error && !data && <p>Loading...</p>}
-
-      {data && (
-        <>
-          <p>Response from backend:</p>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </>
-      )}
-    </main>
+    <Container py="xl">
+      <Title mb="xl">My Blog</Title>
+      <Stack>
+        {posts.map((post: Post) => (
+          <Card key={post.id} shadow="sm" padding="lg" radius="md" withBorder>
+            <Title order={3}>{post.title}</Title>
+            <Text c="dimmed" size="sm" mt="xs">
+              {post.created_at}
+            </Text>
+            <Text mt="sm">{post.content}</Text>
+          </Card>
+        ))}
+      </Stack>
+    </Container>
   );
 }
