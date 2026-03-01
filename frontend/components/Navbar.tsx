@@ -50,12 +50,6 @@ export default function Navbar() {
             >
               About
             </Link>
-            <Link
-              href="/blogs"
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              Blog
-            </Link>
           </Group>
         </Group>
       </Container>
