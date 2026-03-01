@@ -1,0 +1,52 @@
+import { Container, Title, Text, Stack, Card } from "@mantine/core";
+import Link from "next/link";
+
+type Post = {
+  id: number;
+  title: string;
+  content: string;
+  slug: string;
+  created_at: string;
+  updated_at: string;
+};
+
+async function getPosts(): Promise<Post[]> {
+  const res = await fetch("http://localhost:8000/api/posts/");
+  const data = await res.json();
+  return data;
+}
+
+function formatDate(dateString: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(new Date(dateString));
+}
+
+export default async function Home() {
+  const posts = await getPosts();
+  console.log(posts);
+
+  return (
+    <Container py="xl">
+      <Stack>
+        {posts.map((post: Post) => (
+          <Link
+            href={`/blogs/${post.slug}`}
+            key={post.id}
+            style={{ textDecoration: "none" }}
+          >
+            <Card key={post.id} shadow="sm" padding="lg" radius="md" withBorder>
+              <Title order={3}>{post.title}</Title>
+              <Text c="dimmed" size="sm" mt="xs">
+                {formatDate(post.created_at)}
+              </Text>
+              <Text mt="sm">{post.content}</Text>
+            </Card>
+          </Link>
+        ))}
+      </Stack>
+    </Container>
+  );
+}

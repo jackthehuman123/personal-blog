@@ -26,7 +26,7 @@ async function getPost(slug: string): Promise<Post> {
 export default async function PostPage({
   params,
 }: {
-  //
+  // params is also a promise object
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
