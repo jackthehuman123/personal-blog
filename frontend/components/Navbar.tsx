@@ -56,7 +56,6 @@ export default function Navbar() {
             >
               Blog
             </Link>
-            {user?.is_staff && <Link href=""></Link>}
           </Group>
         </Group>
       </Container>
