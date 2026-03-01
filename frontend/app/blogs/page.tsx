@@ -42,12 +42,12 @@ export default function BlogPage() {
 
   useEffect(() => {
     // fetch posts
-    fetch("http://localhost:8000/api/posts/")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/`)
       .then((res) => res.json())
       .then((data) => setPosts(data));
 
     // check if logged in
-    fetch("http://localhost:8000/api/me/", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me/`, {
       credentials: "include",
     })
       .then((res) => (res.ok ? res.json() : null))
@@ -55,7 +55,7 @@ export default function BlogPage() {
   }, []);
 
   async function handleLogout() {
-    await fetch("http://localhost:8000/api/logout/", {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/logout/`, {
       method: "POST",
       credentials: "include",
     });
@@ -64,10 +64,13 @@ export default function BlogPage() {
   }
 
   async function handleDelete(slug: string) {
-    const res = await fetch(`http://localhost:8000/api/posts/${slug}/delete/`, {
-      method: "DELETE",
-      credentials: "include",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/posts/${slug}/delete/`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      },
+    );
 
     if (res.ok) {
       setPosts(posts.filter((post) => post.slug !== slug));

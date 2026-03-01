@@ -15,7 +15,7 @@ export default function Navbar() {
 
   useEffect(() => {
     // check if logged in
-    fetch("http://localhost:8000/api/me/", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me/`, {
       credentials: "include",
     })
       .then((res) => (res.ok ? res.json() : null))

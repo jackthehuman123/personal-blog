@@ -19,7 +19,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   async function handleLogin() {
-    const res = await fetch("http://localhost:8000/api/login/", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include", // this sends and receives cookies

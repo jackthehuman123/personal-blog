@@ -33,7 +33,9 @@ export default function EditPage({
   useEffect(() => {
     async function loadPost() {
       const { slug: postSlug } = await params;
-      const res = await fetch(`http://localhost:8000/api/posts/${postSlug}/`);
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${postSlug}/`,
+      );
       const post: Post = await res.json();
       setTitle(post.title);
       setContent(post.content);
@@ -45,7 +47,7 @@ export default function EditPage({
   async function handleSubmit() {
     const { slug: postSlug } = await params;
     const res = await fetch(
-      `http://localhost:8000/api/posts/${postSlug}/update/`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${postSlug}/update/`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

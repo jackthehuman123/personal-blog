@@ -18,12 +18,15 @@ export default function WritePage() {
   const router = useRouter();
 
   async function handleSubmit() {
-    const res = await fetch("http://localhost:8000/api/posts/create/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ title, content, slug }),
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/posts/create/`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ title, content, slug }),
+      },
+    );
 
     if (res.ok) {
       router.push("/blogs");
