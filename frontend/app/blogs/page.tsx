@@ -9,6 +9,7 @@ import {
   Title,
   Button,
 } from "@mantine/core";
+import { IconPlus } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -91,6 +92,24 @@ export default function BlogPage() {
             </Group>
           </Card>
         ))}
+        {user?.is_staff && (
+          <Link href="/admin/write" style={{ textDecoration: "none" }}>
+            <Card
+              shadow="sm"
+              padding="lg"
+              radius="md"
+              withBorder
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+            >
+              <IconPlus size={32} />
+            </Card>
+          </Link>
+        )}
       </Stack>
       {user && (
         <div
