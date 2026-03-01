@@ -10,6 +10,7 @@ import {
   Button,
 } from "@mantine/core";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type Post = {
   id: number;
@@ -36,6 +37,7 @@ function formatDate(dateString: string) {
 export default function BlogPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [user, setUser] = useState<User>(null);
+  const router = useRouter();
 
   useEffect(() => {
     // fetch posts
@@ -50,6 +52,15 @@ export default function BlogPage() {
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => setUser(data));
   }, []);
+
+  async function handleLogout() {
+    await fetch("http://localhost:8000/api/logout/", {
+      method: "POST",
+      credentials: "include",
+    });
+    setUser(null);
+    router.refresh();
+  }
 
   return (
     <Container py="xl">
@@ -81,6 +92,20 @@ export default function BlogPage() {
           </Card>
         ))}
       </Stack>
+      {user && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: "24px",
+            right: "24px",
+            zIndex: 1000,
+          }}
+        >
+          <Button color="red" variant="filled" onClick={handleLogout}>
+            Logout
+          </Button>
+        </div>
+      )}
     </Container>
   );
 }
