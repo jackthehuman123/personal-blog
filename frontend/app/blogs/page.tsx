@@ -1,4 +1,14 @@
-import { Container, Title, Text, Stack, Card } from "@mantine/core";
+"use client";
+import { useEffect, useState } from "react";
+import {
+  Container,
+  Group,
+  Text,
+  Stack,
+  Card,
+  Title,
+  Button,
+} from "@mantine/core";
 import Link from "next/link";
 
 type Post = {
@@ -10,11 +20,10 @@ type Post = {
   updated_at: string;
 };
 
-async function getPosts(): Promise<Post[]> {
-  const res = await fetch("http://localhost:8000/api/posts/");
-  const data = await res.json();
-  return data;
-}
+type User = {
+  username: string;
+  is_staff: boolean;
+} | null;
 
 function formatDate(dateString: string) {
   return new Intl.DateTimeFormat("en-US", {
@@ -24,27 +33,52 @@ function formatDate(dateString: string) {
   }).format(new Date(dateString));
 }
 
-export default async function Home() {
-  const posts = await getPosts();
-  console.log(posts);
+export default function BlogPage() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [user, setUser] = useState<User>(null);
+
+  useEffect(() => {
+    // fetch posts
+    fetch("http://localhost:8000/api/posts/")
+      .then((res) => res.json())
+      .then((data) => setPosts(data));
+
+    // check if logged in
+    fetch("http://localhost:8000/api/me/", {
+      credentials: "include",
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => setUser(data));
+  }, []);
 
   return (
     <Container py="xl">
       <Stack>
         {posts.map((post: Post) => (
-          <Link
-            href={`/blogs/${post.slug}`}
-            key={post.id}
-            style={{ textDecoration: "none" }}
-          >
-            <Card key={post.id} shadow="sm" padding="lg" radius="md" withBorder>
-              <Title order={3}>{post.title}</Title>
-              <Text c="dimmed" size="sm" mt="xs">
-                {formatDate(post.created_at)}
-              </Text>
-              <Text mt="sm">{post.content}</Text>
-            </Card>
-          </Link>
+          <Card key={post.id} shadow="sm" padding="lg" radius="md" withBorder>
+            <Group justify="space-between">
+              <Link
+                href={`/blogs/${post.slug}`}
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                <Title order={3}>{post.title}</Title>
+                <Text c="dimmed" size="sm" mt="xs">
+                  {formatDate(post.created_at)}
+                </Text>
+                <Text mt="sm">{post.content}</Text>
+              </Link>
+              {user?.is_staff && (
+                <Group>
+                  <Link href={`/admin/edit/${post.slug}`}>
+                    <Button variant="outline">Edit</Button>
+                  </Link>
+                  <Button color="red" variant="outline">
+                    Delete
+                  </Button>
+                </Group>
+              )}
+            </Group>
+          </Card>
         ))}
       </Stack>
     </Container>

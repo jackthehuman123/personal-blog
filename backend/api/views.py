@@ -83,3 +83,14 @@ class PostDeleteView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
     lookup_field = 'slug'
     queryset = Post.objects.all()
+
+class MeView(APIView):
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({
+            'username': request.user.username,
+            'is_staff': request.user.is_staff
+        })
+    
