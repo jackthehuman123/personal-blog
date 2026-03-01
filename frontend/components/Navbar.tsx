@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Group, Container, Title } from "@mantine/core";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 type User = {
   username: string;
@@ -13,16 +12,6 @@ type User = {
 export default function Navbar() {
   const [hover, setHover] = useState(false);
   const [user, setUser] = useState<User>(null);
-
-  const router = useRouter();
-
-  async function handleLogout() {
-    await fetch("http://localhost:8000/api/logout/", {
-      method: "POST",
-      credentials: "include",
-    });
-    router.push("/admin/login");
-  }
 
   useEffect(() => {
     // check if logged in
