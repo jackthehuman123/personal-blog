@@ -63,6 +63,17 @@ export default function BlogPage() {
     router.refresh();
   }
 
+  async function handleDelete(slug: string) {
+    const res = await fetch(`http://localhost:8000/api/posts/${slug}/delete/`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (res.ok) {
+      setPosts(posts.filter((post) => post.slug !== slug));
+    }
+  }
+
   return (
     <Container py="xl">
       <Stack>
@@ -84,7 +95,11 @@ export default function BlogPage() {
                   <Link href={`/admin/edit/${post.slug}`}>
                     <Button variant="outline">Edit</Button>
                   </Link>
-                  <Button color="red" variant="outline">
+                  <Button
+                    color="red"
+                    variant="outline"
+                    onClick={() => handleDelete(post.slug)}
+                  >
                     Delete
                   </Button>
                 </Group>
