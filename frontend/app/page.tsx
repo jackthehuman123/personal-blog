@@ -1,4 +1,5 @@
 import { Container, Title, Text, Stack, Card } from "@mantine/core";
+import Link from "next/link";
 
 type Post = {
   id: number;
@@ -32,13 +33,19 @@ export default async function Home() {
       <Title mb="xl">My Blog</Title>
       <Stack>
         {posts.map((post: Post) => (
-          <Card key={post.id} shadow="sm" padding="lg" radius="md" withBorder>
-            <Title order={3}>{post.title}</Title>
-            <Text c="dimmed" size="sm" mt="xs">
-              {formatDate(post.created_at)}
-            </Text>
-            <Text mt="sm">{post.content}</Text>
-          </Card>
+          <Link
+            href={`/blog/${post.slug}`}
+            key={post.id}
+            style={{ textDecoration: "none" }}
+          >
+            <Card key={post.id} shadow="sm" padding="lg" radius="md" withBorder>
+              <Title order={3}>{post.title}</Title>
+              <Text c="dimmed" size="sm" mt="xs">
+                {formatDate(post.created_at)}
+              </Text>
+              <Text mt="sm">{post.content}</Text>
+            </Card>
+          </Link>
         ))}
       </Stack>
     </Container>
