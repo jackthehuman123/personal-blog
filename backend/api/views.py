@@ -1,8 +1,9 @@
-from django.middleware.csrf import get_token
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth import authenticate
 from .models import Post
 #? serializer turn Python object into JSON
@@ -46,3 +47,19 @@ class LoginView(APIView):
         )
 
         return response
+    
+class CookieJWTAuthentication(JWTAuthentication):
+    def authenticate(self, request):
+        access_token = request.COOKIES.get('access_token')
+        if not access_token:
+            return None
+        validated_token = self.get_validated_token(access_token)
+        return self.get_user(validated_token), validated_token
+
+class PostCreateView(generics.CreateAPIView):
+    serializer_class = PostSerializer
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save()
