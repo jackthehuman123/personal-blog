@@ -48,6 +48,12 @@ class LoginView(APIView):
 
         return response
     
+class LogoutView(APIView):
+    def post(self, request):
+        response = Response({'message': 'Logout successful'})
+        response.delete_cookie('access_token')
+        return response
+
 class CookieJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
         access_token = request.COOKIES.get('access_token')
@@ -63,3 +69,17 @@ class PostCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save()
+
+class PostUpdateView(generics.UpdateAPIView):
+    serializer_class = PostSerializer
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'slug'
+    queryset = Post.objects.all()
+
+class PostDeleteView(generics.DestroyAPIView):
+    serializer_class = PostSerializer
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'slug'
+    queryset = Post.objects.all()
