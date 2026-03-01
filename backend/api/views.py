@@ -12,8 +12,8 @@ from .serializers import PostSerializer
 # Create your views here.
 #? ListAPIView fetches a list
 class PostListView(generics.ListAPIView):
-    queryset = Post.objects.all()
     serializer_class = PostSerializer
+    queryset = Post.objects.all().order_by('-created_at')
 
 #? RetrieveAPIView fetches a single object instead of a list
 class PostDetailView(generics.RetrieveAPIView):
