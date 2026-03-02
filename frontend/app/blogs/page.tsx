@@ -51,7 +51,10 @@ export default function BlogPage() {
       credentials: "include",
     })
       .then((res) => (res.ok ? res.json() : null))
-      .then((data) => setUser(data));
+      .then((data) => {
+        console.log("user data:", data);
+        setUser(data);
+      });
   }, []);
 
   async function handleLogout() {
