@@ -65,7 +65,7 @@ export default function BlogPage() {
 
   async function handleDelete(slug: string) {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/posts/${slug}/delete/`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${slug}/delete/`,
       {
         method: "DELETE",
         credentials: "include",
