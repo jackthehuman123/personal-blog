@@ -42,8 +42,8 @@ class LoginView(APIView):
             key='access_token',
             value=access_token,
             httponly=True,      # JavaScript cannot access this
-            secure=False,       # set to True in production (requires HTTPS)
-            samesite='Lax'      # protects against CSRF attacks
+            secure=True,       # set to True in production (requires HTTPS)
+            samesite='None'      # protects against CSRF attacks
         )
 
         return response
