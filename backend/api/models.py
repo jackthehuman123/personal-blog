@@ -10,3 +10,10 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+    
+class About(models.Model):
+    bio = models.TextField()
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.bio

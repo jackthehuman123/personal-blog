@@ -5,9 +5,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth import authenticate
-from .models import Post
+from .models import Post, About
 #? serializer turn Python object into JSON
-from .serializers import PostSerializer
+from .serializers import PostSerializer, AboutSerializer
 
 # Create your views here.
 #? ListAPIView fetches a list
@@ -94,3 +94,24 @@ class MeView(APIView):
             'is_staff': request.user.is_staff
         })
     
+class AboutView(APIView):
+    def get(self, request):
+        about = About.objects.first()
+        if not about:
+            return Response({'bio': ''})
+        serializer = AboutSerializer(about)
+        return Response(serializer.data)
+    
+class AboutUpdateView(APIView):
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        about = About.objects.first()
+        if not about:
+            about = About()
+        serializer = AboutSerializer(about, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
