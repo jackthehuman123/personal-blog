@@ -11,12 +11,14 @@ import {
   Alert,
 } from "@mantine/core";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const { checkAuth } = useAuth();
 
   async function handleLogin() {
     console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
@@ -28,6 +30,7 @@ export default function LoginPage() {
     });
 
     if (res.ok) {
+      await checkAuth();
       router.push("/blogs");
     } else {
       setError("Invalid username or password");

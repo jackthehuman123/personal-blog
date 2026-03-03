@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import test from "node:test";
 
 type User = {
   username: string;
@@ -11,11 +12,13 @@ type User = {
 type AuthContextType = {
   user: User;
   logout: () => Promise<void>;
+  checkAuth: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   logout: async () => {},
+  checkAuth: async () => {},
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -39,8 +42,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push("/about");
   }
 
+  async function checkAuth() {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me/`, {
+      credentials: "include",
+    });
+    const data = res.ok ? await res.json() : null;
+    setUser(data);
+  }
+
   return (
-    <AuthContext.Provider value={{ user, logout }}>
+    <AuthContext.Provider value={{ user, logout, checkAuth }}>
       {children}
     </AuthContext.Provider>
   );
