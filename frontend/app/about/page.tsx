@@ -20,6 +20,12 @@ export default function AboutPage() {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/about/`)
       .then((res) => res.json())
       .then((data) => setAbout(data));
+
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me/`, {
+      credentials: "include",
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => setUser(data));
   }, []);
 
   return (
