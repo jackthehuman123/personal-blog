@@ -19,6 +19,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   async function handleLogin() {
+    console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
