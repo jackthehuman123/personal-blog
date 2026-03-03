@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useAuth } from "../context/AuthContext";
 
 type Post = {
   id: number;
@@ -22,11 +22,6 @@ type Post = {
   updated_at: string;
 };
 
-type User = {
-  username: string;
-  is_staff: boolean;
-} | null;
-
 function formatDate(dateString: string) {
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
@@ -36,35 +31,15 @@ function formatDate(dateString: string) {
 }
 
 export default function BlogPage() {
+  const { user } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
-  const [user, setUser] = useState<User>(null);
-  const router = useRouter();
 
   useEffect(() => {
     // fetch posts
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/`)
       .then((res) => res.json())
       .then((data) => setPosts(data));
-
-    // check if logged in
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me/`, {
-      credentials: "include",
-    })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        console.log("user data:", data);
-        setUser(data);
-      });
   }, []);
-
-  async function handleLogout() {
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/logout/`, {
-      method: "POST",
-      credentials: "include",
-    });
-    setUser(null);
-    router.refresh();
-  }
 
   async function handleDelete(slug: string) {
     const res = await fetch(
@@ -140,11 +115,7 @@ export default function BlogPage() {
             right: "24px",
             zIndex: 1000,
           }}
-        >
-          <Button color="red" variant="filled" onClick={handleLogout}>
-            Logout
-          </Button>
-        </div>
+        ></div>
       )}
     </Container>
   );

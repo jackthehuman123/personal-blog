@@ -2,30 +2,20 @@
 import { Container, Title, Text, Button } from "@mantine/core";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useAuth } from "../context/AuthContext";
 
 type About = {
   bio: string;
 };
 
-type User = {
-  username: string;
-  is_staff: boolean;
-} | null;
-
 export default function AboutPage() {
+  const { user } = useAuth();
   const [about, setAbout] = useState<About | null>(null);
-  const [user, setUser] = useState<User>(null);
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/about/`)
       .then((res) => res.json())
       .then((data) => setAbout(data));
-
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me/`, {
-      credentials: "include",
-    })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => setUser(data));
   }, []);
 
   return (

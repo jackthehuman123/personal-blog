@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import { MantineProvider, ColorSchemeScript } from "@mantine/core";
 import "@mantine/core/styles.css";
+import { AuthProvider } from "./context/AuthContext";
 
 export default function RootLayout({
   children,
@@ -14,8 +15,10 @@ export default function RootLayout({
       </head>
       <body>
         <MantineProvider>
-          <Navbar />
-          {children}
+          <AuthProvider>
+            <Navbar />
+            {children}
+          </AuthProvider>
         </MantineProvider>
       </body>
     </html>

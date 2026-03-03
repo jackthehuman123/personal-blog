@@ -1,26 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Group, Container, Title } from "@mantine/core";
-import { useState, useEffect } from "react";
-
-type User = {
-  username: string;
-  is_staff: boolean;
-} | null;
+import { Group, Container, Title, Button } from "@mantine/core";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function Navbar() {
-  const [hover, setHover] = useState(false);
-  const [user, setUser] = useState<User>(null);
-
-  useEffect(() => {
-    // check if logged in
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me/`, {
-      credentials: "include",
-    })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => setUser(data));
-  }, []);
+  const { user, logout } = useAuth();
 
   return (
     <header style={{ borderBottom: "1px solid #eee", padding: "12px 0" }}>
@@ -34,22 +19,23 @@ export default function Navbar() {
           </Link>
           <Group gap="lg">
             <Link
-              href={"/admin/login"}
-              onMouseEnter={() => setHover(true)}
-              onMouseLeave={() => setHover(false)}
-              style={{
-                textDecoration: "none",
-                color: hover ? "lightblue" : "white",
-              }}
-            >
-              Admin Login
-            </Link>
-            <Link
               href="/about"
               style={{ textDecoration: "none", color: "black" }}
             >
               About
             </Link>
+            {user ? (
+              <Button color="red" variant="outline" onClick={logout}>
+                Logout
+              </Button>
+            ) : (
+              <Link
+                href="/admin/login"
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                Admin Login
+              </Link>
+            )}
           </Group>
         </Group>
       </Container>

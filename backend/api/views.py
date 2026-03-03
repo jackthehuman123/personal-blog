@@ -1,3 +1,5 @@
+import os
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics, status
@@ -51,7 +53,10 @@ class LoginView(APIView):
 class LogoutView(APIView):
     def post(self, request):
         response = Response({'message': 'Logout successful'})
-        response.delete_cookie('access_token')
+        response.delete_cookie(
+            'access_token',
+            samesite='None' if os.getenv('DEBUG', 'True') == 'False' else 'Lax'
+            )
         return response
 
 class CookieJWTAuthentication(JWTAuthentication):
