@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       credentials: "include",
     });
     setUser(null);
-    router.push("/about");
+    router.push("/blogs");
   }
 
   async function checkAuth() {
