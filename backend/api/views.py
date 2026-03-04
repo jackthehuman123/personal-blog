@@ -7,9 +7,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth import authenticate
-from .models import Post, About
+
+from .models import Post, About, Comment
+
 #? serializer turn Python object into JSON
-from .serializers import PostSerializer, AboutSerializer
+from .serializers import PostSerializer, AboutSerializer, CommentSerializer
 
 # Create your views here.
 #? ListAPIView fetches a list
@@ -120,3 +122,27 @@ class AboutUpdateView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CommentListView(generics.ListAPIView):
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        slug = self.kwargs['slug']
+        return Comment.objects.filter(post__slug=slug).order_by('-created_at')
+    
+class CommentCreateView(generics.CreateAPIView):
+    serializer_class = CommentSerializer
+
+    def perform_create(self, serializer):
+        slug = self.kwargs['slug']
+        post = Post.objects.get(slug=slug)
+        serializer.save(post=post)
+
+class CommentDeleteView(generics.DestroyAPIView):
+    serializer_class = CommentSerializer
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Comment.objects.all()
+    
